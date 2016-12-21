@@ -1,2 +1,19 @@
 ## Arguments: numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-## Ex: ./scalabilityTest 100 myProgram opmThreads=<2-64> otherParameter=12
+## Ex: ./scalaBee 10 ./examples/omp_pi 4 1000000
+
+numberOfTests=$1
+program=$2
+param1=$3
+param2=$4
+
+## Running program and measuring time
+start=$(($(date +%s%N)))
+for (( i=1; i<=$numberOfTests; i++ ))
+do
+	$program $param1 $param2
+done
+end=$(($(date +%s%N)))
+
+runtime=$((end-start)) 
+echo "The total elapsed time is"
+echo "($runtime)/1000000000" | bc -l

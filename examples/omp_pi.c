@@ -3,7 +3,7 @@
  *
  *              pi = 4*[1 - 1/3 + 1/5 - 1/7 + 1/9 - . . . ]
  *
- * Compile:  gcc -g -Wall -fopenmp -o omp_pi omp_pi.c -lm              
+ * Compile:  gcc -g -Wall -fopenmp -o /bin/omp_pi omp_pi.c -lm              
  * Run:      omp_pi <thread_count> <n>
  *           thread_count is the number of threads
  *           n is the number of terms of the series to use
