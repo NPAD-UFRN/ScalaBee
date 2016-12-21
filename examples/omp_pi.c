@@ -48,9 +48,8 @@ int main(int argc, char* argv[]) {
    }
 
    sum = 4.0*sum;
-   printf("With n = %lld terms and %d threads,\n", n, thread_count);
-   printf("   Our estimate of pi = %.14f\n", sum);
-   printf("                   pi = %.14f\n", 4.0*atan(1.0));
+   printf("With n = %lld terms and %d threads", n, thread_count);
+   printf(" - Our estimate of pi = %.14f\n", sum);
    return 0;
 }  /* main */
 

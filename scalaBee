@@ -13,7 +13,7 @@ numberOfTests=$1
 program=$2
 param1=$3
 param2=$4
-problemSize=$(echo $param2 | tr "," "\n")
+problemSize=($(echo $param2 | tr "," " "))
 printf "Program:\t\t$program\n"
 printf "Number of Tests:\t$numberOfTests\n"
 printf "Number of threads:\t$param1\n"
@@ -24,29 +24,33 @@ do
 done
 
 
-printf "\n \nStarting tests...\n"
 
 
 ## Running program and measuring time
-start=$(($(date +%s%N)))
-for (( i=1; i<=$numberOfTests; i++ ))
+printf "\n \nStarting tests...\n"
+numberOfProblemSizes=${#problemSize[@]}
+declare -a averageRuntime
+for (( i=0; i<$numberOfProblemSizes; i++ ));
 do
-	$program $param1 $param2
+	start=$(($(date +%s%N)))
+	for (( j=1; j<=$numberOfTests; j++ ))
+	do
+		$program $param1 $((problemSize[i]))
+	done
+	end=$(($(date +%s%N)))
+
+	runtime=$((end-start)) 
+	printf "The total elapsed time is %.3fs\n" $(bc -q <<< scale=3\;$runtime/1000000000)
+	averageRuntime[i]=$(bc -q <<< scale=3\;$runtime/1000000000/$numberOfTests)
+	printf "Average elapsed time is %.3fs\n" ${averageRuntime[i]}
+	printf "\n\n"
 done
-end=$(($(date +%s%N)))
-
-printf "\n\n"
-runtime=$((end-start)) 
-printf "The total elapsed time is %.3fs\n" $(bc -q <<< scale=3\;$runtime/1000000000) 
-printf "Average elapsed time is %.3fs\n" $(bc -q <<< scale=3\;$runtime/1000000000/$numberOfTests)
-
 
 ## Print Tables
 divider================================
 divider=$divider$divider
 header=" %-12s %1s %10s %11s\n"
-format=" %-12s %01s %11.2f %11.2f\n"
-printf "\n\n"
+format=" %-12s %01s %11.3f %11.3f\n"
 width=50
 printf "%$width.${width}s\n" "$divider"
 printf " %-12s %1s %21s\n" "" "|" "Threads"
@@ -58,9 +62,9 @@ printf "%$width.${width}s\n" "$divider"
 
 
 
-for i in $problemSize
+for (( i=0; i<$numberOfProblemSizes; i++ ));
 do
-    printf "$format" "$i" "|"  3.33 20
+    printf "$format" "$((problemSize[i]))" "|"  "${averageRuntime[i]}" 20
 done
 
 printf "\n \nStarting tests...\n"
