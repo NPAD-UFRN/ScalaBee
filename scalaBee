@@ -46,25 +46,52 @@ do
 done
 
 ## Print Tables
-divider================================
-divider=$divider$divider
-header=" %-12s %1s %10s %11s\n"
-format=" %-12s %01s %11.3f %11.3f\n"
-width=50
-printf "%$width.${width}s\n" "$divider"
-printf " %-12s %1s %21s\n" "" "|" "Threads"
-printf "$header" "" "|" "2" "4"
-printf "%$width.${width}s\n" "$divider"
-printf "$header" "PROBLEM SIZE" "|" "" ""
+printf "==============="
+for (( j=0; j<$numberOfThreads; j++ ));
+do
+    printf "=========="
+done
+printf "==========\n"
 
-printf "%$width.${width}s\n" "$divider"
 
+printf " %-12s %1s" "" "|"
+for (( j=0; j<$((numberOfThreads*5)); j++ ));
+do
+    printf " "
+done
+printf "Threads\n"
+
+printf " %-12s %1s" "" "|" 
+for (( j=0; j<$numberOfThreads; j++ ));
+do
+    printf "%10s" ${threads[j]}
+done
+printf "\n"
+
+printf "==============="
+for (( j=0; j<$numberOfThreads; j++ ));
+do
+    printf "=========="
+done
+printf "==========\n"
+
+
+printf " %-12s %1s\n" "PROBLEM SIZE" "|"
+
+printf "==============="
+for (( j=0; j<$numberOfThreads; j++ ));
+do
+    printf "=========="
+done
+printf "==========\n"
 
 
 for (( i=0; i<$numberOfProblemSizes; i++ ));
 do
+	printf " %-12s %01s " "$((problemSize[i]))" "|"
 	for (( j=0; j<$numberOfThreads; j++ ));
 	do
-    	printf "$format" "$((problemSize[i]))" "|"  "${averageRuntime[i*numberOfThreads+j]}" 20
+    	printf "%10.3f"  "${averageRuntime[i*numberOfThreads+j]}"
     done
+    printf "\n"
 done
