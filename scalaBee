@@ -1,6 +1,6 @@
 #/bin/bash
 ## Arguments: numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-## Ex: ./scalaBee 10 ./examples/omp_pi 4 1000000;10000000;10000000
+## Ex: ./scalaBee 2 ./examples/omp_pi 2,4,8 100000,1000000,10000000,100000000
 
 ## Setting up
 export LC_NUMERIC="en_US.UTF-8"
@@ -14,36 +14,35 @@ program=$2
 param1=$3
 param2=$4
 problemSize=($(echo $param2 | tr "," " "))
+threads=($(echo $param1 | tr "," " "))
 printf "Program:\t\t$program\n"
 printf "Number of Tests:\t$numberOfTests\n"
-printf "Number of threads:\t$param1\n"
-printf "Problem Size:\t\t"
-for i in $problemSize
-do
-    printf "$i "
-done
-
-
+printf "Number of threads:\t${threads[*]}"
+printf "\nProblem Size:\t\t${problemSize[*]}"
 
 
 ## Running program and measuring time
 printf "\n \nStarting tests...\n"
 numberOfProblemSizes=${#problemSize[@]}
+numberOfThreads=${#threads[@]}
 declare -a averageRuntime
 for (( i=0; i<$numberOfProblemSizes; i++ ));
 do
-	start=$(($(date +%s%N)))
-	for (( j=1; j<=$numberOfTests; j++ ))
+	for (( j=0; j<$numberOfThreads; j++ ));
 	do
-		$program $param1 $((problemSize[i]))
-	done
-	end=$(($(date +%s%N)))
+		start=$(($(date +%s%N)))
+		for (( k=1; k<=$numberOfTests; k++ ))
+		do
+			$program $((threads[j])) $((problemSize[i]))
+		done
+		end=$(($(date +%s%N)))
 
-	runtime=$((end-start)) 
-	printf "The total elapsed time is %.3fs\n" $(bc -q <<< scale=3\;$runtime/1000000000)
-	averageRuntime[i]=$(bc -q <<< scale=3\;$runtime/1000000000/$numberOfTests)
-	printf "Average elapsed time is %.3fs\n" ${averageRuntime[i]}
-	printf "\n\n"
+		runtime=$((end-start)) 
+		printf "The total elapsed time is %.3fs\n" $(bc -q <<< scale=3\;$runtime/1000000000)
+		averageRuntime[i*numberOfThreads+j]=$(bc -q <<< scale=3\;$runtime/1000000000/$numberOfTests)
+		printf "Average elapsed time is %.3fs\n" ${averageRuntime[i*numberOfThreads+j]}
+		printf "\n\n"
+	done
 done
 
 ## Print Tables
@@ -64,7 +63,8 @@ printf "%$width.${width}s\n" "$divider"
 
 for (( i=0; i<$numberOfProblemSizes; i++ ));
 do
-    printf "$format" "$((problemSize[i]))" "|"  "${averageRuntime[i]}" 20
+	for (( j=0; j<$numberOfThreads; j++ ));
+	do
+    	printf "$format" "$((problemSize[i]))" "|"  "${averageRuntime[i*numberOfThreads+j]}" 20
+    done
 done
-
-printf "\n \nStarting tests...\n"
