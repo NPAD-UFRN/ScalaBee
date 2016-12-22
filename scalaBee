@@ -2,7 +2,27 @@
 ## Arguments: numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
 ## Ex: ./scalaBee 2 ./examples/omp_pi 1,2,4,8 100000,1000000,10000000,100000000
 
+## Function for creating output file
+function createOutputFile {
+	fileName=$1
+	declare -a tableData=("${!2}")
+	if [ -e $fileName ]
+	then
+	  rm $fileName
+	fi
+	touch $fileName
+	for (( i=0; i<$numberOfProblemSizes; i++ ));
+	do
+		printf  "%s," "$((problemSize[i]))"  >> $fileName
+		for (( j=0; j<$numberOfThreads; j++ ));
+		do
+	   		printf "%.3f,"  "${tableData[i*numberOfThreads+j]}" >> $fileName
+	   	done
+	   	printf "\n" >> $fileName
+	done
+}
 
+## Function for printing table bar
 function printBar {
 	printf "========================="
 	for (( j=0; j<$numberOfThreads; j++ ));
@@ -12,6 +32,7 @@ function printBar {
 	printf "\n"
 }
 
+## Function for printing table
 function printTable {
 	declare -a tableData=("${!1}")
 
@@ -100,17 +121,31 @@ do
     done
 done
 
+## Write output files
+createOutputFile $(pwd)/output/runtime.dat averageRuntime[@]
+createOutputFile $(pwd)/output/scalability.dat scalab[@]
+createOutputFile $(pwd)/output/efficiency.dat eff[@]
+
+
 ## Print Time Table
 printf "AVERAGE RUNTIME IN SECONDS\n"
 printTable averageRuntime[@]
 
-# Print Scalability Table
+## Print Scalability Table
 printf "\n\nSCALABILITY TABLE\n"
 printTable scalab[@]
 
 
-# Print Efficiency Table
+## Print Efficiency Table
 printf "\n\nEFFICIENCY TABLE\n"
 printTable eff[@]
 
 
+## Plotting data
+gnuplot -persist <<-EOFMarker
+	set grid
+	set title 'Scalability Plot'
+	set xlabel 'Number of threads'
+	set ylabel 'Scalability'
+	plot 'output/eff.dat' u 1:2 w lp t '10000', 'output/eff.dat' u 1:3 w lp t '100000', 'output/eff.dat' u 1:4 w lp t '1000000'
+EOFMarker
