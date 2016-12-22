@@ -12,7 +12,9 @@ function printBar {
 	printf "\n"
 }
 
-function printTableHeader {
+function printTable {
+	declare -a tableData=("${!1}")
+
 	printBar
 
 	printf " %-12s %1s" "PROBLEM SIZE" "|"
@@ -29,6 +31,17 @@ function printTableHeader {
 	done
 	printf "\n"
 
+	printBar
+
+	for (( i=0; i<$numberOfProblemSizes; i++ ));
+	do
+		printf " %-12s %01s " "$((problemSize[i]))" "|"
+		for (( j=0; j<$numberOfThreads; j++ ));
+		do
+    		printf "%10.3fs"  "${tableData[i*numberOfThreads+j]}"
+    	done
+    	printf "\n"
+	done
 	printBar
 }
 
@@ -74,44 +87,30 @@ do
 	done
 done
 
-## Print Time Table
-printf "AVERAGE RUNTIME IN SECONDS\n"
-printTableHeader
+
+## Calculate Scalability and Efficiency
+declare -a scalab
+declare -a eff
 for (( i=0; i<$numberOfProblemSizes; i++ ));
 do
-	printf " %-12s %01s " "$((problemSize[i]))" "|"
 	for (( j=0; j<$numberOfThreads; j++ ));
 	do
-    	printf "%10.3fs"  "${averageRuntime[i*numberOfThreads+j]}"
+    	scalab[i*numberOfThreads+j]=$(bc -q <<< scale=3\;${averageRuntime[i*numberOfThreads]}/${averageRuntime[i*numberOfThreads+j]})
+    	eff[i*numberOfThreads+j]=$(bc -q <<< scale=3\;${scalab[i*numberOfThreads+j]}/$((threads[j])))
     done
-    printf "\n"
 done
-printBar
+
+## Print Time Table
+printf "AVERAGE RUNTIME IN SECONDS\n"
+printTable averageRuntime[@]
 
 # Print Scalability Table
 printf "\n\nSCALABILITY TABLE\n"
-printTableHeader
-for (( i=0; i<$numberOfProblemSizes; i++ ));
-do
-	printf " %-12s %01s " "$((problemSize[i]))" "|"
-	for (( j=0; j<$numberOfThreads; j++ ));
-	do
-    	printf "%10.3f"  "$(bc -q <<< scale=3\;${averageRuntime[i*numberOfThreads]}/${averageRuntime[i*numberOfThreads+j]})"
-    done
-    printf "\n"
-done
-printBar
+printTable scalab[@]
+
 
 # Print Efficiency Table
 printf "\n\nEFFICIENCY TABLE\n"
-printTableHeader
-for (( i=0; i<$numberOfProblemSizes; i++ ));
-do
-	printf " %-12s %01s " "$((problemSize[i]))" "|"
-	for (( j=0; j<$numberOfThreads; j++ ));
-	do
-    	printf "%10.3f"  "$(bc -q <<< scale=3\;${averageRuntime[i*numberOfThreads]}/${averageRuntime[i*numberOfThreads+j]}/$((threads[j])))"
-    done
-    printf "\n"
-done
-printBar
+printTable eff[@]
+
+
