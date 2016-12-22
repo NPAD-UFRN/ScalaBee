@@ -1,6 +1,36 @@
 #/bin/bash
 ## Arguments: numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-## Ex: ./scalaBee 2 ./examples/omp_pi 2,4,8 100000,1000000,10000000,100000000
+## Ex: ./scalaBee 2 ./examples/omp_pi 1,2,4,8 100000,1000000,10000000,100000000
+
+
+function printBar {
+	printf "========================="
+	for (( j=0; j<$numberOfThreads; j++ ));
+	do
+	    printf "=========="
+	done
+	printf "\n"
+}
+
+function printTableHeader {
+	printBar
+
+	printf " %-12s %1s" "PROBLEM SIZE" "|"
+	for (( j=0; j<$((numberOfThreads*5)); j++ ));
+	do
+	    printf " "
+	done
+	printf "Threads\n"
+
+	printf " %-12s %1s" "" "|" 
+	for (( j=0; j<$numberOfThreads; j++ ));
+	do
+	    printf "%10s" ${threads[j]}
+	done
+	printf "\n"
+
+	printBar
+}
 
 ## Setting up
 export LC_NUMERIC="en_US.UTF-8"
@@ -36,7 +66,6 @@ do
 			$program $((threads[j])) $((problemSize[i]))
 		done
 		end=$(($(date +%s%N)))
-
 		runtime=$((end-start)) 
 		printf "The total elapsed time is %.3fs\n" $(bc -q <<< scale=3\;$runtime/1000000000)
 		averageRuntime[i*numberOfThreads+j]=$(bc -q <<< scale=3\;$runtime/1000000000/$numberOfTests)
@@ -45,53 +74,44 @@ do
 	done
 done
 
-## Print Tables
-printf "==============="
-for (( j=0; j<$numberOfThreads; j++ ));
-do
-    printf "=========="
-done
-printf "==========\n"
-
-
-printf " %-12s %1s" "" "|"
-for (( j=0; j<$((numberOfThreads*5)); j++ ));
-do
-    printf " "
-done
-printf "Threads\n"
-
-printf " %-12s %1s" "" "|" 
-for (( j=0; j<$numberOfThreads; j++ ));
-do
-    printf "%10s" ${threads[j]}
-done
-printf "\n"
-
-printf "==============="
-for (( j=0; j<$numberOfThreads; j++ ));
-do
-    printf "=========="
-done
-printf "==========\n"
-
-
-printf " %-12s %1s\n" "PROBLEM SIZE" "|"
-
-printf "==============="
-for (( j=0; j<$numberOfThreads; j++ ));
-do
-    printf "=========="
-done
-printf "==========\n"
-
-
+## Print Time Table
+printf "AVERAGE RUNTIME IN SECONDS\n"
+printTableHeader
 for (( i=0; i<$numberOfProblemSizes; i++ ));
 do
 	printf " %-12s %01s " "$((problemSize[i]))" "|"
 	for (( j=0; j<$numberOfThreads; j++ ));
 	do
-    	printf "%10.3f"  "${averageRuntime[i*numberOfThreads+j]}"
+    	printf "%10.3fs"  "${averageRuntime[i*numberOfThreads+j]}"
     done
     printf "\n"
 done
+printBar
+
+# Print Scalability Table
+printf "\n\nSCALABILITY TABLE\n"
+printTableHeader
+for (( i=0; i<$numberOfProblemSizes; i++ ));
+do
+	printf " %-12s %01s " "$((problemSize[i]))" "|"
+	for (( j=0; j<$numberOfThreads; j++ ));
+	do
+    	printf "%10.3f"  "$(bc -q <<< scale=3\;${averageRuntime[i*numberOfThreads]}/${averageRuntime[i*numberOfThreads+j]})"
+    done
+    printf "\n"
+done
+printBar
+
+# Print Efficiency Table
+printf "\n\nEFFICIENCY TABLE\n"
+printTableHeader
+for (( i=0; i<$numberOfProblemSizes; i++ ));
+do
+	printf " %-12s %01s " "$((problemSize[i]))" "|"
+	for (( j=0; j<$numberOfThreads; j++ ));
+	do
+    	printf "%10.3f"  "$(bc -q <<< scale=3\;${averageRuntime[i*numberOfThreads]}/${averageRuntime[i*numberOfThreads+j]}/$((threads[j])))"
+    done
+    printf "\n"
+done
+printBar
