@@ -14,24 +14,39 @@ numberOfTests=int(sys.argv[1])
 program=sys.argv[2]
 param1=sys.argv[3]
 param2=sys.argv[4]
-
 problemSize=param2.split(",")
 threads=param1.split(",")
 
+#Printing parameters on screen
 print "Program:\t\t" + program 
 print "Number of Tests:\t%d" % numberOfTests 
 print "Number of threads:\t", threads 
 print "Problem Size:\t\t", problemSize 
 print "\n"
 
+# Creating bidimentional arrays
+average_time = [[0 for x in range(len(threads))] for y in range(len(problemSize))]
+scalability=average_time
+efficiency=average_time
+
 # Running program and measuring time
-
 from subprocess import call
-
 for i in range(len(problemSize)):
 	for j in range(len(threads)):
 		start_time = time.time()
 		for k in range(numberOfTests):
 			call([program, threads[j] , problemSize[i]])
-		elapsed_time = time.time() - start_time
-		print "Elapsed time: %.3fs\n" % elapsed_time
+		average_time[i][j] = (time.time() - start_time)/numberOfTests
+		print "Elapsed time: %.3fs\n" % average_time[i][j]
+
+
+## Calculate Scalability and Efficiency
+for i in range(len(problemSize)):
+	for j in range(len(threads)):
+		average_time[i][0]/average_time[i][j]
+		efficiency[i][j]=scalability[i][j]/(int(threads[j]))
+
+
+print average_time
+print scalability
+print efficiency
