@@ -51,7 +51,14 @@ for i in range(len(problemSize)):
 		scalability[i][j]=average_time[i][0]/average_time[i][j]
 		efficiency[i][j]=scalability[i][j]/(int(threads[j]))
 
-# Printing Average Time table
+# Formattig Data to a more readble format
+for i in range(len(problemSize)):
+	for j in range(len(threads)):
+		average_time[i][j]="{:.3f}".format(average_time[i][j])
+		scalability[i][j]="{:.3f}".format(scalability[i][j])
+		efficiency[i][j]="{:.3f}".format(efficiency[i][j])
+
+# Creating tables to print
 from prettytable import PrettyTable
 average_time_t = PrettyTable(['Problem Size / Threads']+threads)
 scalability_t = PrettyTable(['Problem Size / Threads']+threads)
@@ -60,6 +67,8 @@ for i in range(len(problemSize)):
 	average_time_t.add_row([problemSize[i]]+average_time[i])
 	scalability_t.add_row([problemSize[i]]+scalability[i])
 	efficiency_t.add_row([problemSize[i]]+efficiency[i])
+
+# Printing tables
 print "AVERAGE TIME IN SECONDS"
 print average_time_t
 print "\nSCALABILITY"
