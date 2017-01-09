@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # Arguments: numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
 # Ex: python scalaBee.py 2 ./examples/omp_pi 1,2,4,8 100000,1000000,10000000,100000000
-# Dependencies: PrettyTable - pip install PrettyTable; 
+# Dependencies: PrettyTable - pip install PrettyTable; Matplotlib - pip install matplotlib
 
 # Importing everything needed
 import os, sys, time
-
-def getColumn(matrix, z):
-    return [row[z] for row in matrix]
-
-def getRow(matrix, z):
-    return [col[z] for col in matrix]
+from subprocess import call
+from prettytable import PrettyTable
+import matplotlib.pyplot as plt
 
 ## Showing initial message
 print "=================\nStarting ScalaBee\n=================\n"
@@ -36,7 +33,6 @@ scalability=[[0 for x in range(len(threads))] for y in range(len(problemSize))]
 efficiency=[[0 for x in range(len(threads))] for y in range(len(problemSize))]
 
 # Running program and measuring time
-from subprocess import call
 for i in range(len(problemSize)):
 	for j in range(len(threads)):
 		start_time = time.time()
@@ -51,7 +47,7 @@ for i in range(len(problemSize)):
 		scalability[i][j]=average_time[i][0]/average_time[i][j]
 		efficiency[i][j]=scalability[i][j]/(int(threads[j]))
 
-# Formattig Data to a more readble format
+# Formatting Data to a more readable format
 for i in range(len(problemSize)):
 	for j in range(len(threads)):
 		average_time[i][j]="{:.3f}".format(average_time[i][j])
@@ -59,7 +55,6 @@ for i in range(len(problemSize)):
 		efficiency[i][j]="{:.3f}".format(efficiency[i][j])
 
 # Creating tables to print
-from prettytable import PrettyTable
 average_time_t = PrettyTable(['Problem Size / Threads']+threads)
 scalability_t = PrettyTable(['Problem Size / Threads']+threads)
 efficiency_t = PrettyTable(['Problem Size / Threads']+threads)
@@ -75,4 +70,20 @@ print "\nSCALABILITY"
 print scalability_t
 print "\nEFFICIENCY"
 print efficiency_t
+
+# Creating plot results
+plt.figure(1)
+plt.subplot(311)
+for i in range(len(problemSize)):
+	plt.plot(threads,average_time[i])
+plt.ylabel('Average Time in s')
+plt.subplot(312)
+for i in range(len(problemSize)):
+	plt.plot(threads,scalability[i])
+plt.ylabel('Scalability')
+plt.subplot(313)
+for i in range(len(problemSize)):
+	plt.plot(threads,efficiency[i])
+plt.ylabel('Efficiency')
+plt.show()
 
