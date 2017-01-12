@@ -2,6 +2,9 @@
 # ScalaBee <img src="https://github.com/danielholanda/ScalaBee/blob/master/media/Bee?raw=true" width="35">
 A simple automated scalability test environment designed for your computer or cluster
 
+## Sample Output
+![Demo Doccou alpha](https://github.com/danielholanda/ScalaBee/blob/master/media/sampleOutputGraph.png?raw=true)![Demo Doccou alpha](https://github.com/danielholanda/ScalaBee/blob/master/media/sampleOutputTable.png?raw=true)
+
 
 ## How to Use
 ### On your local machine
@@ -21,6 +24,7 @@ A simple automated scalability test environment designed for your computer or cl
 
 ## Dependencies 
 * This project depends on Matplotlib and PrettyTable. To install them, use the command:
+
     ```bash
     pip install PrettyTable, matplotlib
     ```
