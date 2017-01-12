@@ -1,4 +1,5 @@
-# ScalaBee
+
+# ScalaBee <img src="https://github.com/danielholanda/ScalaBee/blob/master/media/Bee?raw=true" width="35">
 A simple automated scalability test environment designed for your computer or cluster
 
 
