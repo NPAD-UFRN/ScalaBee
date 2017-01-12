@@ -3,11 +3,6 @@
 A simple automated scalability test environment designed for your computer or cluster
 
 
-
-## Sample Output
-![Demo Doccou alpha](https://github.com/danielholanda/ScalaBee/blob/master/media/sampleOutputGraph.png?raw=true)![Demo Doccou alpha](https://github.com/danielholanda/ScalaBee/blob/master/media/sampleOutputTable.png?raw=true)
-
-
 ## How to Use
 ### On your local machine
 * Arguments:
