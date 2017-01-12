@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Arguments: numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-# Ex: python scalaBee.py 2 ./examples/omp_pi 1,2,4,8 100000,1000000,10000000,100000000
+# Ex: python scalaBee.py 2 ./examples/omp_pi 1,2,4,8,16 100000,1000000,10000000,100000000
 # Dependencies: PrettyTable - pip install PrettyTable; Matplotlib - pip install matplotlib
 
 # Importing everything needed
@@ -112,4 +112,5 @@ ax=plt.gca()
 ax.xaxis.set_major_locator(MultipleLocator(1))
 ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: int(2**x)))
 ax.yaxis.set_major_locator(MultipleLocator(.2))
+plt.text(x,y,'text')
 plt.show()
