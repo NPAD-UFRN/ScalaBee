@@ -1,4 +1,4 @@
-# ScalaBee
+# ScalaBee ![Demo Doccou alpha](https://github.com/danielholanda/ScalaBee/blob/master/media/Bee?raw=true)
 A simple automated scalability test environment designed for your computer or cluster
 
 
