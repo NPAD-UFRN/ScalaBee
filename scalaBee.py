@@ -5,9 +5,11 @@
 
 # Importing everything needed
 import os, sys, time
+from math import log
 from subprocess import call
 from prettytable import PrettyTable
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator, FuncFormatter
 
 ## Showing initial message
 print "=================\nStarting ScalaBee\n=================\n"
@@ -39,7 +41,7 @@ for i in range(len(problemSize)):
 		for k in range(numberOfTests):
 			call([program, threads[j] , problemSize[i]])
 		average_time[i][j] = (time.time() - start_time)/numberOfTests
-		print "Elapsed time: %.3fs\n" % average_time[i][j]
+		print "Average elapsed time per call: %.3fs\n" % average_time[i][j]
 
 # Calculate Scalability and Efficiency
 for i in range(len(problemSize)):
@@ -73,17 +75,41 @@ print efficiency_t
 
 # Creating plot results
 plt.figure(1)
-plt.subplot(311)
+plt.subplot(412)
+threadsPower2=[log(float(y),2) for y in threads];
+scalabilityPower2=[[0 for x in range(len(threads))] for y in range(len(problemSize))]
 for i in range(len(problemSize)):
-	plt.plot(threads,average_time[i])
+	scalabilityPower2[i]=[log(float(y),2) for y in scalability[i]];
+plt.suptitle('ScalaBee - Time, Scalability & Efficiency', fontsize=14, fontweight='bold')
+for i in range(len(problemSize)):
+	plt.semilogy(threadsPower2,average_time[i], 'o-', label=problemSize[i])
 plt.ylabel('Average Time in s')
-plt.subplot(312)
+plt.xlabel('Threads')
+plt.legend(bbox_to_anchor=(0., 1.3, 1., .102), loc=3, ncol=2, mode="expand", borderaxespad=.0)
+plt.grid(True)
+ax=plt.gca()
+ax.xaxis.set_major_locator(MultipleLocator(1))
+ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: int(2**x)))
+plt.subplot(413)
 for i in range(len(problemSize)):
-	plt.plot(threads,scalability[i])
+	plt.plot(threadsPower2,scalabilityPower2[i],'o-')
 plt.ylabel('Scalability')
-plt.subplot(313)
+plt.xlabel('Threads')
+plt.grid(True)
+ax=plt.gca()
+ax.xaxis.set_major_locator(MultipleLocator(1))
+ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: int(2**x)))
+ax.yaxis.set_major_locator(MultipleLocator(1))
+ax.yaxis.set_major_formatter(FuncFormatter(lambda y, pos: int(2**y)))
+plt.subplot(414)
 for i in range(len(problemSize)):
-	plt.plot(threads,efficiency[i])
+	plt.plot(threadsPower2,efficiency[i], 'o-')
 plt.ylabel('Efficiency')
+plt.xlabel('Threads')
+plt.grid(True)
+plt.tight_layout()
+ax=plt.gca()
+ax.xaxis.set_major_locator(MultipleLocator(1))
+ax.xaxis.set_major_formatter(FuncFormatter(lambda x, pos: int(2**x)))
+ax.yaxis.set_major_locator(MultipleLocator(.2))
 plt.show()
-
