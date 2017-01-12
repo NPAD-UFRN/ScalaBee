@@ -1,5 +1,5 @@
 # ScalaBee
-A simple automated scalability test environment designed for your computer or cluster Edit
+A simple automated scalability test environment designed for your computer or cluster
 
 
 
