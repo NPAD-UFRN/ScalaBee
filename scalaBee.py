@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # Arguments: python scalaBee.py numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-# Ex: python scalaBee.py 2 ./examples/omp_pi 1,2,4,8,16 100000,1000000,10000000,100000000
+# Ex: python scalaBee.py -nT 2 ./examples/omp_pi 1,2,4,8,16 100000,1000000,10000000,100000000
 # Dependencies: PrettyTable - pip install PrettyTable; Matplotlib - pip install matplotlib
 
 # Importing everything needed
-import os, sys, time
+import os, sys, time, argparse
 from math import log
 from subprocess import call
 from prettytable import PrettyTable
@@ -15,10 +15,21 @@ from matplotlib.ticker import MultipleLocator, FuncFormatter
 print "=================\nStarting ScalaBee\n=================\n"
 
 ## Getting Parameters
-numberOfTests=int(sys.argv[1])
-program=sys.argv[2]
-param1=sys.argv[3]
-param2=sys.argv[4]
+parser = argparse.ArgumentParser(description='https://github.com/danielholanda/ScalaBee')
+parser.add_argument('program', metavar='Prog', 
+                    help='Your program')
+parser.add_argument('funcArguments', metavar='Arg', nargs='+',
+                    help='Your program arguments')
+parser.add_argument('-nT', metavar='numberOfTests', type=int,
+                    help='Number of tests to be performed for each sample',default=1)
+args = parser.parse_args()
+
+
+
+numberOfTests=args.nT
+program=args.program
+param1=args.funcArguments[0]
+param2=args.funcArguments[1]
 problemSize=param2.split(",")
 threads=param1.split(",")
 
