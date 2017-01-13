@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # Arguments: python scalaBee.py numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-# Ex: python scalaBee.py +nTe 2 ./examples/omp_pi 1,2,4,8,16 100000,1000000,10000000,100000000
+# Ex: python scalaBee.py +nTe 3 ./examples/omp_pi {t{1,2,4,8,16,32}} {p{10000,100000,1000000}}
 # Dependencies: PrettyTable - pip install PrettyTable; Matplotlib - pip install matplotlib
 
 # Importing everything needed
-import os, sys, time, argparse
+import os, sys, time, argparse, re
 import matplotlib.pyplot as plt
 from math import log
 from subprocess import call
@@ -19,24 +19,60 @@ print "=================\nStarting ScalaBee\n=================\n"
 parser = argparse.ArgumentParser(description='https://github.com/danielholanda/ScalaBee',
 								prefix_chars='+',
 								formatter_class=RawTextHelpFormatter)
-
 parser.add_argument('program', metavar='Prog', 
-                    help='Your program\nExample: .\\myProgram')
+                    help='Your program\n    Example: .\\myProgram')
 parser.add_argument('funcArguments', metavar='Arg', nargs='+',
                     help='Your program arguments \n'
-                    'Use <t2> or <t4> or <t8> or <t16>... istead of your thread number\n'
-                    'Use <problemSize1,problemSize2,...> to indicate the problem sizes')
+                    '    Use {t4} or {t8} or {t16} or {t32} or ... istead of your thread number\n'
+                    '    Use {p{size1,size2,...}} to indicate the problem sizes')
 parser.add_argument('+nTe', metavar='numberOfTests', type=int,
                     help='Number of tests to be performed for each sample',default=1)
 args = parser.parse_args()
 
+# Find string with pattern {key{S,T,R,I,N,G}}
+# Note that {p{154,123}} is read as {p154}{p123}
+def findArg(input_list,key):
+	myList = []
+	for i in range(len(input_list)):
+		bracket_level = 0
+		current = ''
+		for c in input_list[i]:
+			if c == "{" and (bracket_level==0):
+			    bracket_level += 1
+			elif c == key and bracket_level==1:
+			    bracket_level += 1
+			elif c != "}" and bracket_level==2:
+			    current+=c
+			elif c == "}" and bracket_level==2:
+				myList.append(current)
+				break
+			else:
+				bracket_level==0
+	print myList	
+	return myList
 
+# Filtering Parameters
+threads = findArg(args.funcArguments,'t')
+problemSize = findArg(args.funcArguments,'p')
 numberOfTests=args.nTe
 program=args.program
-param1=args.funcArguments[0]
-param2=args.funcArguments[1]
-problemSize=param2.split(",")
-threads=param1.split(",")
+
+# Error Messages
+if not threads:
+	print "Number of threads not found. Exiting Program."
+	exit()
+
+if not problemSize:
+	print "Problem Size not found. Exiting Program."
+	exit()
+
+# Transforming {t8} in {t1}{t2}{t4}{t8}
+if len(threads)==1:
+	aux=log(float(threads[0]),2)
+	print aux
+	threads=[]
+	for i in range(int(aux)+1):
+		threads.append(str(2**i))
 
 #Printing parameters on screen
 print "Program:\t\t" + program 
