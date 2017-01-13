@@ -16,17 +16,17 @@ print "=================\nStarting ScalaBee\n=================\n"
 
 ## Getting Parameters
 parser = argparse.ArgumentParser(description='https://github.com/danielholanda/ScalaBee')
+parser = argparse.ArgumentParser(prefix_chars='+')
 parser.add_argument('program', metavar='Prog', 
                     help='Your program')
 parser.add_argument('funcArguments', metavar='Arg', nargs='+',
                     help='Your program arguments')
-parser.add_argument('-nT', metavar='numberOfTests', type=int,
+parser.add_argument('+nTe', metavar='numberOfTests', type=int,
                     help='Number of tests to be performed for each sample',default=1)
 args = parser.parse_args()
 
 
-
-numberOfTests=args.nT
+numberOfTests=args.nTe
 program=args.program
 param1=args.funcArguments[0]
 param2=args.funcArguments[1]
