@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Arguments: python scalaBee.py numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-# Ex: python scalaBee.py +nTe 3 ./examples/omp_pi {t{1,2,4,8,16,32}} {p{10000,100000,1000000}}
+# Ex: python scalaBee.py +nTe 3 ./examples/omp_pi {t8} {p{10000,100000,1000000}}
 # Dependencies: PrettyTable - pip install PrettyTable; Matplotlib - pip install matplotlib
 
 # Importing everything needed

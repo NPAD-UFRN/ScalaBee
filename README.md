@@ -8,15 +8,29 @@ A simple automated scalability test environment designed for your computer or cl
 
 ## How to Use
 ### On your local machine
-* Arguments:
-    
+* Usage: 
+
     ```bash
-    python scalaBee.py numerOfTests program arg1Init-arg1Final arg2Init-arg2Final...
+    python scalaBee.py [+h] [+nTe numberOfTests] Prog Arg [Arg ...]
     ```
 * Example:
+
+    Let's say your program has the arguments strutured like this:
     
     ```bash
-    python scalaBee.py 2 ./examples/omp_pi 1,2,4,8,16 100000,1000000,10000000,100000000
+    .myProgram numberOfThreads problemSize
+    ```
+    
+    You can use scalaby to test it with 1, 2, 4, 8, 16 threads and with problem size 100000, 1000000, 10000000, 100000000 by simply running.
+    
+    ```bash
+    python scalaBee.py myProgram {t16} {p{100000,1000000,10000000,100000000}}
+    ```
+    
+    You can also run each combination 10 times, for example. For this, simply add the option:
+    
+    ```bash
+    +nTe 10 
     ```
 
 ### On a cluster
