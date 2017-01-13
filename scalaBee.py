@@ -1,26 +1,31 @@
 #!/usr/bin/env python
 # Arguments: python scalaBee.py numerOfTests program arg1Init-arg1Final arg2Init-arg2Final arg3Init-arg3Final...
-# Ex: python scalaBee.py -nT 2 ./examples/omp_pi 1,2,4,8,16 100000,1000000,10000000,100000000
+# Ex: python scalaBee.py +nTe 2 ./examples/omp_pi 1,2,4,8,16 100000,1000000,10000000,100000000
 # Dependencies: PrettyTable - pip install PrettyTable; Matplotlib - pip install matplotlib
 
 # Importing everything needed
 import os, sys, time, argparse
+import matplotlib.pyplot as plt
 from math import log
 from subprocess import call
 from prettytable import PrettyTable
-import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FuncFormatter
+from argparse import RawTextHelpFormatter
 
 ## Showing initial message
 print "=================\nStarting ScalaBee\n=================\n"
 
 ## Getting Parameters
-parser = argparse.ArgumentParser(description='https://github.com/danielholanda/ScalaBee')
-parser = argparse.ArgumentParser(prefix_chars='+')
+parser = argparse.ArgumentParser(description='https://github.com/danielholanda/ScalaBee',
+								prefix_chars='+',
+								formatter_class=RawTextHelpFormatter)
+
 parser.add_argument('program', metavar='Prog', 
-                    help='Your program')
+                    help='Your program\nExample: .\\myProgram')
 parser.add_argument('funcArguments', metavar='Arg', nargs='+',
-                    help='Your program arguments')
+                    help='Your program arguments \n'
+                    'Use <t2> or <t4> or <t8> or <t16>... istead of your thread number\n'
+                    'Use <problemSize1,problemSize2,...> to indicate the problem sizes')
 parser.add_argument('+nTe', metavar='numberOfTests', type=int,
                     help='Number of tests to be performed for each sample',default=1)
 args = parser.parse_args()
