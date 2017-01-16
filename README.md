@@ -18,7 +18,7 @@ A simple automated scalability test environment designed for your computer or cl
     Let's say your program has the arguments strutured like this:
     
     ```bash
-    .myProgram numberOfThreads problemSize
+    myProgram numberOfThreads problemSize
     ```
     
     You can use scalaby to test it with 1, 2, 4, 8, 16 threads and with problem size 100000, 1000000, 10000000, 100000000 by simply running.
@@ -34,7 +34,7 @@ A simple automated scalability test environment designed for your computer or cl
     ```
 
 ### On a cluster
-* This feature is still being develloped
+* This feature is still being developed
 
 ## Dependencies 
 * This project depends on Matplotlib and PrettyTable. To install them, use the command:

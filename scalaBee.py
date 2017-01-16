@@ -32,28 +32,31 @@ args = parser.parse_args()
 # Find string with pattern {key{S,T,R,I,N,G}}
 # Note that {p{154,123}} is read as {p154}{p123}
 def findArg(input_list,key):
-	myList = []
+	argList = []
+	argIndexList = []
 	for i in range(len(input_list)):
 		bracket_level = 0
 		current = ''
-		for c in input_list[i]:
+		for index, c in enumerate(input_list[i]):
 			if c == "{" and (bracket_level==0):
 			    bracket_level += 1
+			    initialChar = index
 			elif c == key and bracket_level==1:
 			    bracket_level += 1
 			elif c != "}" and bracket_level==2:
 			    current+=c
 			elif c == "}" and bracket_level==2:
-				myList.append(current)
+				argList.append(current)
+				argFlag = input_list[i][:initialChar]
+				argIndexList.append(i)
 				break
 			else:
-				bracket_level==0
-	print myList	
-	return myList
+				bracket_level==0				
+	return argList, argFlag, argIndexList
 
 # Filtering Parameters
-threads = findArg(args.funcArguments,'t')
-problemSize = findArg(args.funcArguments,'p')
+threads, threadsFlag, threadsIndexList = findArg(args.funcArguments,'t')
+problemSize, problemSizeFlag, problemSizeIndexList = findArg(args.funcArguments,'p')
 numberOfTests=args.nTe
 program=args.program
 
@@ -69,16 +72,15 @@ if not problemSize:
 # Transforming {t8} in {t1}{t2}{t4}{t8}
 if len(threads)==1:
 	aux=log(float(threads[0]),2)
-	print aux
 	threads=[]
 	for i in range(int(aux)+1):
 		threads.append(str(2**i))
 
-#Printing parameters on screen
+# Printing parameters on screen
 print "Program:\t\t" + program 
 print "Number of Tests:\t%d" % numberOfTests 
-print "Number of threads:\t", threads 
-print "Problem Size:\t\t", problemSize 
+print "Number of threads:\t", threadsFlag, threads 
+print "Problem Size:\t\t", problemSizeFlag, problemSize 
 print "\n"
 
 # Creating bidimentional arrays
