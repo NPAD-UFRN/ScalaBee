@@ -34,6 +34,7 @@ args = parser.parse_args()
 def findArg(input_list,key):
 	argList = []
 	argIndexList = []
+	argFlag =''
 	for i in range(len(input_list)):
 		bracket_level = 0
 		current = ''
@@ -66,8 +67,8 @@ if not threads:
 	exit()
 
 if not problemSize:
-	print "Problem Size not found. Exiting Program."
-	exit()
+	print "Problem Size not found. Assuming 1."
+	problemSize = ['1']
 
 # Transforming {t8} in {t1}{t2}{t4}{t8}
 if len(threads)==1:
@@ -91,18 +92,20 @@ efficiency=[[0 for x in range(len(threads))] for y in range(len(problemSize))]
 # Running program and measuring time
 for i in range(len(problemSize)):
 	for j in range(len(threads)):
-		callCmd = args.funcArguments[:] 
+		#Creating command to run
+		callCmd = args.funcArguments[:]
 		callCmd[threadsIndexList[0]]=threadsFlag+threads[j]
-		callCmd[problemSizeIndexList[0]]=problemSizeFlag+problemSize[i]
-		if len(problemSizeIndexList)>1:
-			del callCmd[problemSizeIndexList[1]:problemSizeIndexList[-1]+1]
+		if problemSizeIndexList:
+			callCmd[problemSizeIndexList[0]]=problemSizeFlag+problemSize[i]
+			if len(problemSizeIndexList)>1:
+				del callCmd[problemSizeIndexList[1]:problemSizeIndexList[-1]+1]
+		#Running the program
 		start_time = time.time()
 		for k in range(numberOfTests):
 			call([program]+callCmd)
 		average_time[i][j] = (time.time() - start_time)/numberOfTests
 		print "Average elapsed time per call: %.3fs\n" % average_time[i][j]
 
-exit()
 # Calculate Scalability and Efficiency
 for i in range(len(problemSize)):
 	for j in range(len(threads)):
