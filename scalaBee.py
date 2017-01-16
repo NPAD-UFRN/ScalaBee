@@ -30,7 +30,7 @@ parser.add_argument('+nTe', metavar='numberOfTests', type=int,
 args = parser.parse_args()
 
 # Find string with pattern {key{S,T,R,I,N,G}}
-# Note that {p{154,123}} is read as {p154}{p123}
+# Note that argFlag={p{154,123}} is read as argFlag={p154} argFlag={p123}
 def findArg(input_list,key):
 	argList = []
 	argIndexList = []
@@ -91,12 +91,18 @@ efficiency=[[0 for x in range(len(threads))] for y in range(len(problemSize))]
 # Running program and measuring time
 for i in range(len(problemSize)):
 	for j in range(len(threads)):
+		callCmd = args.funcArguments[:] 
+		callCmd[threadsIndexList[0]]=threadsFlag+threads[j]
+		callCmd[problemSizeIndexList[0]]=problemSizeFlag+problemSize[i]
+		if len(problemSizeIndexList)>1:
+			del callCmd[problemSizeIndexList[1]:problemSizeIndexList[-1]+1]
 		start_time = time.time()
 		for k in range(numberOfTests):
-			call([program, threads[j] , problemSize[i]])
+			call([program]+callCmd)
 		average_time[i][j] = (time.time() - start_time)/numberOfTests
 		print "Average elapsed time per call: %.3fs\n" % average_time[i][j]
 
+exit()
 # Calculate Scalability and Efficiency
 for i in range(len(problemSize)):
 	for j in range(len(threads)):
