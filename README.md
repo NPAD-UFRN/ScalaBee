@@ -40,7 +40,7 @@ A simple automated scalability test environment designed for your computer or cl
 * This project depends on Matplotlib and PrettyTable. To install them, use the command:
 
     ```bash
-    pip install PrettyTable, matplotlib
+    pip install PrettyTable matplotlib
     ```
 
 ## Bug Reports & Feature Requests
