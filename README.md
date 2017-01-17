@@ -7,34 +7,39 @@ A simple automated scalability test environment designed for your computer or cl
 
 
 ## How to Use
-### On your local machine
-* Usage: 
+### Usage
+* Arguments
+ 
 
     ```bash
-    python scalaBee.py [+h] [+nTe numberOfTests] Prog Arg [Arg ...]
+    scalaBee.py [+h] [+nTe numberOfTests] Prog Arg [Arg ...]
     ```
-* Example:
+### Examples
+* Generic example:
 
     Let's say your program has the arguments strutured like this:
     
     ```bash
-    myProgram numberOfThreads problemSize
+    myProgram -numberOfThreads=X -problemSize=Y -otherArg=file.txt
     ```
-    
-    You can use scalaby to test it with 1, 2, 4, 8, 16 threads and with problem size 100000, 1000000, 10000000, 100000000 by simply running.
+    In this example, if you want to use 8 threads and the problem size is 10 you would execute
     
     ```bash
-    python scalaBee.py myProgram {t16} {p{100000,1000000,10000000,100000000}}
+    myProgram -numberOfThreads=8 -problemSize=10 -otherArg=file.txt
     ```
     
-    You can also run each combination 10 times, for example. For this, simply add the option:
+    Now let's say you want to check this program's speedup and efficiency with 1, 2, 4, 8, 16 threads and with problem sizes 10, 100, 1000. To do this using Scalabee, simply type
     
     ```bash
-    +nTe 10 
+    scalaBee.py myProgram -numberOfThreads={t16} -problemSize={p{10,100,1000}} -otherArg=file.txt
     ```
-
-### On a cluster
-* This feature is still being developed
+    
+    If you want to run each combination multiple times to get a better time average (let's say 20 times) simply add the option:
+    
+    ```bash
+    +nTe 20 
+    ```
+    Also note that it is optional to indicate the problem size.
 
 ## Dependencies 
 * This project depends on Matplotlib and PrettyTable. To install them, use the command:
@@ -47,11 +52,7 @@ A simple automated scalability test environment designed for your computer or cl
 You can help by reporting bugs, suggesting features, reviewing feature specifications or just by sharing your opinion.
 Use [GitHub Issues](https://github.com/TheFighters/Smith-Waterman/issues) for all of that.
 
-## To do
-* Add cluster support
-* Change the way that the inputs are received for a more flexible use
-    
-    
+
 ## Contributing
 1. Fork the project.
 2. Create a branch for your new feature.
@@ -65,3 +66,4 @@ This project was develloped by [Daniel Holanda](https://github.com/danielholanda
 
 ## License
 This project uses the MIT license. See [LICENSE](https://github.com/danielholanda/ScalaBee/blob/master/LICENSE) for more details.
+
