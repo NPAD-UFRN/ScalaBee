@@ -6,13 +6,13 @@
 # Importing everything needed
 import os, sys, time, argparse, re
 import matplotlib
+matplotlib.use("TKAgg")
 import matplotlib.pyplot as plt
 from math import log
 from subprocess import call
 from prettytable import PrettyTable
 from matplotlib.ticker import MultipleLocator, FuncFormatter
 from argparse import RawTextHelpFormatter
-matplotlib.use("TKAgg")
 
 ## Showing initial message
 print ("=================\nStarting ScalaBee\n=================\n")
