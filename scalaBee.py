@@ -5,15 +5,17 @@
 
 # Importing everything needed
 import os, sys, time, argparse, re
+import matplotlib
 import matplotlib.pyplot as plt
 from math import log
 from subprocess import call
 from prettytable import PrettyTable
 from matplotlib.ticker import MultipleLocator, FuncFormatter
 from argparse import RawTextHelpFormatter
+matplotlib.use("TKAgg")
 
 ## Showing initial message
-print "=================\nStarting ScalaBee\n=================\n"
+print ("=================\nStarting ScalaBee\n=================\n")
 
 ## Getting Parameters
 parser = argparse.ArgumentParser(description='https://github.com/danielholanda/ScalaBee',
@@ -63,11 +65,11 @@ program=args.program
 
 # Error Messages
 if not threads:
-	print "Number of threads not found. Exiting Program."
+	print ("Number of threads not found. Exiting Program.")
 	exit()
 
 if not problemSize:
-	print "Problem Size not found. Assuming 1."
+	print ("Problem Size not found. Assuming 1.")
 	problemSize = ['1']
 
 # Transforming {t8} in {t1}{t2}{t4}{t8}
@@ -78,11 +80,11 @@ if len(threads)==1:
 		threads.append(str(2**i))
 
 # Printing parameters on screen
-print "Program:\t\t" + program 
-print "Number of Tests:\t%d" % numberOfTests 
-print "Number of threads:\t", threadsFlag, threads 
-print "Problem Size:\t\t", problemSizeFlag, problemSize 
-print "\n"
+print ("Program:\t\t" + program) 
+print ("Number of Tests:\t%d" % numberOfTests) 
+print ("Number of threads:\t", threadsFlag, threads) 
+print ("Problem Size:\t\t", problemSizeFlag, problemSize) 
+print ("\n")
 
 # Creating bidimentional arrays
 average_time = [[0 for x in range(len(threads))] for y in range(len(problemSize))]
@@ -104,7 +106,7 @@ for i in range(len(problemSize)):
 		for k in range(numberOfTests):
 			call([program]+callCmd)
 		average_time[i][j] = (time.time() - start_time)/numberOfTests
-		print "Average elapsed time per call: %.3fs\n" % average_time[i][j]
+		print ("Average elapsed time per call: %.3fs\n" % average_time[i][j])
 
 # Calculate Speedup and Efficiency
 for i in range(len(problemSize)):
@@ -129,12 +131,12 @@ for i in range(len(problemSize)):
 	efficiency_t.add_row([problemSize[i]]+efficiency[i])
 
 # Printing tables
-print "AVERAGE TIME IN SECONDS"
-print average_time_t
-print "\nSPEEDUP"
-print speedup_t
-print "\nEFFICIENCY"
-print efficiency_t
+print ("AVERAGE TIME IN SECONDS")
+print (average_time_t)
+print ("\nSPEEDUP")
+print (speedup_t)
+print ("\nEFFICIENCY")
+print (efficiency_t)
 
 # Creating plot results
 plt.figure(1)
